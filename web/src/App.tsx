@@ -4,6 +4,7 @@ import { AdvancedView } from './components/AdvancedView';
 import { HomeView } from './components/HomeView';
 import { ResultsView } from './components/ResultsView';
 import { SettingsModal } from './components/SettingsModal';
+import { useMaterialRipple } from './hooks/useMaterialRipple';
 import { ToastProvider, useToast } from './components/Toasts';
 import { getHealth, isAbortError } from './lib/api';
 import {
@@ -67,6 +68,7 @@ function readRoute(): Route {
 
 function AppShell() {
   const { pushToast } = useToast();
+  useMaterialRipple();
 
   const [route, setRoute] = useState<Route>(readRoute);
   const [reloadToken, setReloadToken] = useState(0);

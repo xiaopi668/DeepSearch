@@ -21,6 +21,9 @@ export const MATERIAL_SEEDS: ReadonlyArray<{ id: string; name: string; color: st
 
 const HEX_RE = /^#[0-9a-f]{6}$/i;
 
+/** AOSP Material You 的 5 个 tonal palette × 13 个色调。 */
+const TONES = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100] as const;
+
 export function normalizeThemeSeed(value: unknown): string {
   return typeof value === 'string' && HEX_RE.test(value.trim())
     ? value.trim().toLowerCase()
@@ -74,6 +77,23 @@ export function applyMaterialYou(seed: string, mode: Theme): { surface: string }
   for (const [role, argb] of Object.entries(roles)) {
     const token = role.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
     root.style.setProperty(`--md-${token}`, hexFromArgb(argb));
+  }
+
+  // 同时暴露 AOSP 的 65 个 system_* 色调角色，供需要精确 tonal 值的组件使用。
+  const palettes = {
+    accent1: scheme.primaryPalette,
+    accent2: scheme.secondaryPalette,
+    accent3: scheme.tertiaryPalette,
+    neutral1: scheme.neutralPalette,
+    neutral2: scheme.neutralVariantPalette,
+  };
+  for (const [name, palette] of Object.entries(palettes)) {
+    for (const tone of TONES) {
+      root.style.setProperty(
+        `--md-system-${name}-${tone * 10}`,
+        hexFromArgb(palette.tone(tone)),
+      );
+    }
   }
 
   return { surface: hexFromArgb(scheme.surface) };

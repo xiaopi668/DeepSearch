@@ -30,7 +30,7 @@
 - 🌗 **明暗主题**：默认 Material You 深色主题，右上角一键切换浅色，选择保存在
   浏览器 `localStorage`。
 - 🎨 **Material You 动态配色**：设置里选择来源色、自定义颜色或上传图片取色，
-  使用 Android 12/13 的 `SchemeTonalSpot` 算法实时生成整套动态色板。
+  使用 Android 12/13 的 `SchemeTonalSpot` 算法实时生成 5 个 tonal palettes / 65 个颜色角色。
 - 🐳 **可部署**：Docker / docker compose / systemd / 直接 `node` 四种运行方式。
 
 ## 界面预览
