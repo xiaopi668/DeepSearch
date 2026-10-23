@@ -168,6 +168,11 @@ export function forgetSearch(term: string): string[] {
   return next;
 }
 
+/** 清空本地搜索历史。 */
+export function clearHistory(): void {
+  removeRaw(STORAGE_KEYS.history);
+}
+
 export function hasSeenWelcome(): boolean {
   return getRaw(STORAGE_KEYS.welcomeSeen) === '1';
 }

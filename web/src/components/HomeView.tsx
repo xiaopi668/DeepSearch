@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import type { FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Grip, Info, Keyboard, Moon, Settings, Sun } from 'lucide-react';
+import { Grip, History, Info, Keyboard, Moon, Settings, Sun, Trash2, X } from 'lucide-react';
+import { clearHistory, forgetSearch, loadHistory } from '../lib/storage';
 import type { AiMode, Theme } from '../lib/types';
+import { classNames } from '../lib/utils';
 import { InfoDialog } from './InfoDialog';
 import { Logo } from './Logo';
 import { SearchBar } from './SearchBar';
@@ -31,6 +34,16 @@ const itemVariants: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } },
 };
 
+const historyListVariants: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.04, delayChildren: 0.12 } },
+};
+
+const historyItemVariants: Variants = {
+  hidden: { opacity: 0, y: 8, scale: 0.96 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.28, ease: 'easeOut' } },
+};
+
 /**
  * Google 深色首页式布局（映射为真实功能）：
  * 顶栏快捷链接 + 更多菜单 + 设置药丸；主区只保留白色字标与宽搜索框
@@ -47,9 +60,22 @@ export function HomeView({
 }: HomeViewProps) {
   const [appsOpen, setAppsOpen] = useState(false);
   const [infoDialog, setInfoDialog] = useState<InfoDialogKind>(null);
+  const [searchActive, setSearchActive] = useState(false);
+  const [history, setHistory] = useState<string[]>(() => loadHistory());
   const appsRootRef = useRef<HTMLDivElement>(null);
   const appsButtonRef = useRef<HTMLButtonElement>(null);
   const appsMenuRef = useRef<HTMLDivElement>(null);
+
+  // 焦点落在历史项上时，Escape 也应收起面板。
+  useEffect(() => {
+    if (!searchActive) return;
+    const handleEscape = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') return;
+      setSearchActive(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [searchActive]);
 
   useEffect(() => {
     if (!appsOpen) return;
@@ -80,6 +106,36 @@ export function HomeView({
   const openInfoDialog = (kind: Exclude<InfoDialogKind, null>): void => {
     setAppsOpen(false);
     setInfoDialog(kind);
+  };
+
+  const handleSearchFocus = (): void => {
+    setSearchActive(true);
+  };
+
+  const handleSearchBlur = (event: ReactFocusEvent<HTMLDivElement>): void => {
+    const next = event.relatedTarget;
+    if (next instanceof Node && event.currentTarget.contains(next)) return;
+    setSearchActive(false);
+  };
+
+  const handleSearchKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>): void => {
+    if (event.key !== 'Escape') return;
+    setSearchActive(false);
+    event.currentTarget.querySelector<HTMLInputElement>('input')?.blur();
+  };
+
+  const handleHistorySearch = (term: string): void => {
+    setSearchActive(false);
+    onSearch(term);
+  };
+
+  const handleForgetHistory = (term: string): void => {
+    setHistory(forgetSearch(term));
+  };
+
+  const handleClearHistory = (): void => {
+    clearHistory();
+    setHistory([]);
   };
 
   return (
@@ -187,12 +243,25 @@ export function HomeView({
       </header>
 
       <main id="main" className="home-main" tabIndex={-1}>
-        <motion.div className="home-content" variants={containerVariants} initial="hidden" animate="show">
+        <motion.div
+          className={classNames('home-content', searchActive && 'home-content--searching')}
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          layout
+          transition={{ layout: { type: 'spring', stiffness: 380, damping: 26, mass: 0.7 } }}
+        >
           <motion.div variants={itemVariants} className="home-logo">
             <Logo size="lg" />
           </motion.div>
 
-          <motion.div variants={itemVariants} className="home-search">
+          <motion.div
+            variants={itemVariants}
+            className="home-search"
+            onFocus={handleSearchFocus}
+            onBlur={handleSearchBlur}
+            onKeyDown={handleSearchKeyDown}
+          >
             <SearchBar
               variant="hero"
               initialValue=""
@@ -201,6 +270,90 @@ export function HomeView({
               aiMode={aiMode}
               onToggleAiMode={onToggleAiMode}
             />
+
+            <AnimatePresence initial={false}>
+              {searchActive ? (
+                <motion.section
+                  className="home-history"
+                  aria-label="最近搜索"
+                  initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: {
+                      delay: 0.08,
+                      type: 'spring',
+                      stiffness: 420,
+                      damping: 30,
+                      mass: 0.7,
+                    },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: 8,
+                    scale: 0.98,
+                    transition: { duration: 0.18, ease: 'easeOut' },
+                  }}
+                >
+                  <div className="home-history__head">
+                    <span className="home-history__title">最近搜索</span>
+                    {history.length > 0 ? (
+                      <button
+                        type="button"
+                        className="home-history__clear"
+                        onClick={handleClearHistory}
+                      >
+                        <Trash2 size={13} aria-hidden="true" />
+                        清除
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {history.length > 0 ? (
+                    <motion.ul
+                      className="home-history__list"
+                      variants={historyListVariants}
+                      initial="hidden"
+                      animate="show"
+                    >
+                      {history.map((term) => (
+                        <motion.li
+                          key={term}
+                          className="home-history__row"
+                          variants={historyItemVariants}
+                          layout
+                        >
+                          <button
+                            type="button"
+                            className="home-history__term"
+                            title={term}
+                            onClick={() => handleHistorySearch(term)}
+                          >
+                            <History size={14} aria-hidden="true" />
+                            <span>{term}</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="home-history__remove"
+                            aria-label={`删除历史：${term}`}
+                            title="删除"
+                            onClick={() => handleForgetHistory(term)}
+                          >
+                            <X size={13} aria-hidden="true" />
+                          </button>
+                        </motion.li>
+                      ))}
+                    </motion.ul>
+                  ) : (
+                    <p className="home-history__empty">
+                      <History size={14} aria-hidden="true" />
+                      暂无搜索历史
+                    </p>
+                  )}
+                </motion.section>
+              ) : null}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       </main>
