@@ -20,6 +20,7 @@
     "screenshot": "node scripts/screenshot.mjs"
   },
   "dependencies": {
+    "@material/material-color-utilities": "0.4.0",
     "compression": "^1.8.2",
     "express": "^5.3.0"
   },

@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import type { ChangeEvent, CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
+  Check,
   CircleCheck,
   CircleX,
   Eye,
   EyeOff,
+  ImagePlus,
   LoaderCircle,
   Lock,
   Trash,
@@ -15,6 +18,7 @@ import { validateApiKey } from '../lib/api';
 import { describeError } from '../lib/errors';
 import { formatNumber } from '../lib/format';
 import { isValidApiKeyFormat } from '../lib/storage';
+import { extractThemeSeedFromImage, MATERIAL_SEEDS } from '../lib/theme';
 import { AI_MODELS, ALLOWED_COUNTS } from '../lib/types';
 import type { AiSettings, BackendStatus, ModelInfo } from '../lib/types';
 import { classNames } from '../lib/utils';
@@ -35,28 +39,32 @@ interface SettingsModalProps {
   accessToken: string;
   accessTokenRequired: boolean;
   settings: AiSettings;
+  themeSeed: string;
   backendStatus: BackendStatus;
   backendVersion: string;
   onClose: () => void;
   onSaveKey: (key: string) => void;
   onSaveAccessToken: (token: string) => void;
   onChangeSettings: (patch: Partial<AiSettings>) => void;
+  onChangeThemeSeed: (seed: string) => void;
   onClearData: () => void;
 }
 
-/** Material 风格设置弹窗：白底、圆角 12、分隔线、蓝色文字按钮、Material 开关。 */
+/** Material You 设置弹窗：tonal surface、28dp 圆角、动态色强调与 Material 开关。 */
 export function SettingsModal({
   open,
   apiKey,
   accessToken,
   accessTokenRequired,
   settings,
+  themeSeed,
   backendStatus,
   backendVersion,
   onClose,
   onSaveKey,
   onSaveAccessToken,
   onChangeSettings,
+  onChangeThemeSeed,
   onClearData,
 }: SettingsModalProps) {
   const reduce = useReducedMotion();
@@ -64,6 +72,7 @@ export function SettingsModal({
   const panelRef = useRef<HTMLDivElement>(null);
   const keyInputRef = useRef<HTMLInputElement>(null);
   const testAbortRef = useRef<AbortController | null>(null);
+  const seedFileRef = useRef<HTMLInputElement>(null);
 
   const [draftKey, setDraftKey] = useState(apiKey);
   const [draftToken, setDraftToken] = useState(accessToken);
@@ -72,6 +81,7 @@ export function SettingsModal({
   const [keyError, setKeyError] = useState<string | null>(null);
   const [testState, setTestState] = useState<TestState>({ status: 'idle' });
   const [confirmClear, setConfirmClear] = useState(false);
+  const [seedImageBusy, setSeedImageBusy] = useState(false);
 
   useDialogA11y({ open, onClose, panelRef, initialFocusRef: keyInputRef });
 
@@ -96,6 +106,22 @@ export function SettingsModal({
     },
     [],
   );
+
+  const handleThemeSeedFile = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    setSeedImageBusy(true);
+    try {
+      const seed = await extractThemeSeedFromImage(file);
+      onChangeThemeSeed(seed);
+      pushToast('已从图片提取 Material You 主题色', 'success');
+    } catch (error) {
+      pushToast(error instanceof Error ? error.message : '图片取色失败', 'error');
+    } finally {
+      setSeedImageBusy(false);
+    }
+  };
 
   const handleKeyChange = (value: string): void => {
     setDraftKey(value);
@@ -465,6 +491,80 @@ export function SettingsModal({
                       </button>
                     ))}
                   </div>
+                </div>
+              </section>
+
+              <section className="m-section" aria-labelledby="settings-theme-heading">
+                <h3 id="settings-theme-heading" className="m-section__title">
+                  Material You 主题色
+                </h3>
+                <p className="m-hint">
+                  从一个来源色生成整套动态色板（主色、容器色、表面色与强调色），这是 Material You 的核心。
+                </p>
+
+                <div className="m-seed-grid" role="group" aria-label="主题色">
+                  {MATERIAL_SEEDS.map((seed) => {
+                    const selected = themeSeed.toLowerCase() === seed.color.toLowerCase();
+                    return (
+                      <button
+                        key={seed.id}
+                        type="button"
+                        className={classNames(
+                          'm-seed-swatch',
+                          selected && 'm-seed-swatch--selected',
+                        )}
+                        style={{ '--seed-color': seed.color } as CSSProperties}
+                        aria-label={`主题色：${seed.name}`}
+                        aria-pressed={selected}
+                        title={seed.name}
+                        onClick={() => onChangeThemeSeed(seed.color)}
+                      >
+                        {selected ? <Check size={16} strokeWidth={3} aria-hidden="true" /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="m-seed-actions">
+                  <label className="m-seed-custom" title="自定义主题色">
+                    <input
+                      type="color"
+                      value={themeSeed}
+                      onChange={(event) => onChangeThemeSeed(event.target.value)}
+                      aria-label="自定义主题色"
+                    />
+                    <span>自定义颜色</span>
+                  </label>
+                  <button
+                    type="button"
+                    className="m-text-button btn btn--ghost"
+                    onClick={() => seedFileRef.current?.click()}
+                    disabled={seedImageBusy}
+                  >
+                    {seedImageBusy ? (
+                      <LoaderCircle size={15} className="m-seed-spin" aria-hidden="true" />
+                    ) : (
+                      <ImagePlus size={15} aria-hidden="true" />
+                    )}
+                    从图片取色
+                  </button>
+                  <input
+                    ref={seedFileRef}
+                    type="file"
+                    accept="image/*"
+                    className="visually-hidden"
+                    onChange={handleThemeSeedFile}
+                  />
+                </div>
+
+                <div className="m-seed-preview">
+                  <span
+                    className="m-seed-preview__dot"
+                    style={{ '--seed-color': themeSeed } as CSSProperties}
+                    aria-hidden="true"
+                  />
+                  <span>当前来源色</span>
+                  <code>{themeSeed}</code>
                 </div>
               </section>
 

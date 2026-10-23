@@ -13,13 +13,16 @@ import {
   loadApiKey,
   loadSettings,
   loadTheme,
+  loadThemeSeed,
   markWelcomeSeen,
   rememberSearch,
   saveAccessToken,
   saveApiKey,
   saveSettings,
   saveTheme,
+  saveThemeSeed,
 } from './lib/storage';
+import { applyMaterialYou, DEFAULT_THEME_SEED, normalizeThemeSeed } from './lib/theme';
 import { DEFAULT_SETTINGS } from './lib/types';
 import type {
   AiMode,
@@ -68,6 +71,7 @@ function AppShell() {
   const [route, setRoute] = useState<Route>(readRoute);
   const [reloadToken, setReloadToken] = useState(0);
   const [theme, setTheme] = useState<Theme>(() => loadTheme());
+  const [themeSeed, setThemeSeed] = useState<string>(() => loadThemeSeed());
   const [apiKey, setApiKey] = useState<string>(() => loadApiKey());
   const [accessToken, setAccessToken] = useState<string>(() => loadAccessToken());
   const [settings, setSettings] = useState<AiSettings>(() => loadSettings());
@@ -80,9 +84,16 @@ function AppShell() {
   // index.html 静态 data-theme="dark" 兜底首屏；useLayoutEffect 在绘制前应用已存主题，避免闪烁。
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
+    const { surface } = applyMaterialYou(themeSeed, theme);
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    if (meta) meta.content = theme === 'dark' ? '#101114' : '#f8fafd';
-  }, [theme]);
+    if (meta) meta.content = surface;
+  }, [theme, themeSeed]);
+
+  const handleChangeThemeSeed = useCallback((seed: string): void => {
+    const next = normalizeThemeSeed(seed);
+    saveThemeSeed(next);
+    setThemeSeed(next);
+  }, []);
 
   const handleToggleTheme = useCallback((): void => {
     setTheme((previous) => {
@@ -261,6 +272,7 @@ function AppShell() {
     setAccessToken('');
     setSettings({ ...DEFAULT_SETTINGS });
     setTheme('dark');
+    setThemeSeed(DEFAULT_THEME_SEED);
     setSettingsOpen(false);
     pushToast('已清空本地数据', 'success');
     if (route.view === 'search') goHome();
@@ -321,6 +333,8 @@ function AppShell() {
           onClose={handleCloseSettings}
           onSaveKey={handleSaveKey}
           onSaveAccessToken={handleSaveAccessToken}
+          themeSeed={themeSeed}
+          onChangeThemeSeed={handleChangeThemeSeed}
           onChangeSettings={handleChangeSettings}
           onClearData={handleClearData}
         />

@@ -1,3 +1,4 @@
+import { normalizeThemeSeed } from './theme';
 import { ALLOWED_COUNTS, DEFAULT_ADVANCED_DRAFT, DEFAULT_SETTINGS } from './types';
 import type { AdvancedDraft, AiMode, AiModel, AiSettings, Theme } from './types';
 import { isRecord, readString } from './utils';
@@ -13,6 +14,7 @@ export const STORAGE_KEYS = {
   welcomeSeen: 'deepsearch:v1:welcomeSeen',
   accessToken: 'deepsearch:v1:accessToken',
   theme: 'deepsearch:v1:theme',
+  themeSeed: 'deepsearch:v1:themeSeed',
 } as const;
 
 export const MAX_HISTORY = 8;
@@ -188,6 +190,15 @@ export function loadTheme(): Theme {
 
 export function saveTheme(theme: Theme): void {
   setRaw(STORAGE_KEYS.theme, theme);
+}
+
+/** Material You 来源色：非法/缺失值回退到默认种子色。 */
+export function loadThemeSeed(): string {
+  return normalizeThemeSeed(getRaw(STORAGE_KEYS.themeSeed));
+}
+
+export function saveThemeSeed(seed: string): void {
+  setRaw(STORAGE_KEYS.themeSeed, normalizeThemeSeed(seed));
 }
 
 function isAllowedAdvancedCount(value: unknown): value is number {

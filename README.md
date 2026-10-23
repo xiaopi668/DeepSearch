@@ -29,6 +29,8 @@
   内嵌「AI 模式」开关（开启后搜索完自动生成总结）、左侧「+」直达高级搜索。
 - 🌗 **明暗主题**：默认 Material You 深色主题，右上角一键切换浅色，选择保存在
   浏览器 `localStorage`。
+- 🎨 **Material You 动态配色**：设置里选择来源色、自定义颜色或上传图片取色，
+  使用 Android 12/13 的 `SchemeTonalSpot` 算法实时生成整套动态色板。
 - 🐳 **可部署**：Docker / docker compose / systemd / 直接 `node` 四种运行方式。
 
 ## 界面预览
@@ -57,6 +59,7 @@
 | --- | --- |
 | 前端 | React 19、TypeScript、Vite 8、framer-motion、react-markdown |
 | 后端 | Node.js 24（ESM）、Express 5、compression；零数据库、零额外运行时依赖 |
+| 动态配色 | @material/material-color-utilities 0.4（HCT / SchemeTonalSpot） |
 | 测试 | Vitest 5 + Supertest（13 个文件 / 165 个用例，全 mock，不消耗真实额度）、Playwright（截图/冒烟） |
 | 部署 | 多阶段 Dockerfile、docker compose、systemd unit |
 
