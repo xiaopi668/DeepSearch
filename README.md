@@ -1,6 +1,6 @@
 # DeepSearch
 
-一个可以直接部署到服务器的网页搜索引擎：界面是 Google 风搜索页（默认深色 Material Dark，
+一个可以直接部署到服务器的网页搜索引擎：界面是 Google Material You 风格搜索页（默认深色，
 可切换浅色），检索结果来自
 **DeepSeek 官方 Search API**（`POST /v1/tools/search`），支持正文抓取（`/v1/tools/fetch`）
 与可选的 AI 总结回答（`/chat/completions`）。
@@ -25,9 +25,9 @@
   `localStorage`，不同用户互不影响，站点运营者不承担任何 API 费用与密钥风险。
 - ✨ **细腻动效**：入场、列表 stagger、骨架屏、流式打字光标、抽屉、Toast 等，尊重
   `prefers-reduced-motion`。
-- 🧩 **Google 式首页**：顶栏入口（高级搜索 / 更多菜单 / 设置药丸 / 主题切换）、宽搜索框
+- 🧩 **Material You 式首页**：顶栏入口（高级搜索 / 更多菜单 / 设置药丸 / 主题切换）、宽搜索框
   内嵌「AI 模式」开关（开启后搜索完自动生成总结）、左侧「+」直达高级搜索。
-- 🌗 **明暗主题**：默认 Google Material Dark 深色主题，右上角一键切换浅色，选择保存在
+- 🌗 **明暗主题**：默认 Material You 深色主题，右上角一键切换浅色，选择保存在
   浏览器 `localStorage`。
 - 🐳 **可部署**：Docker / docker compose / systemd / 直接 `node` 四种运行方式。
 

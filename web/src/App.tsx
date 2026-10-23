@@ -81,7 +81,7 @@ function AppShell() {
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    if (meta) meta.content = theme === 'dark' ? '#202124' : '#ffffff';
+    if (meta) meta.content = theme === 'dark' ? '#101114' : '#f8fafd';
   }, [theme]);
 
   const handleToggleTheme = useCallback((): void => {
