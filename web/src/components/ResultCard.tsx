@@ -9,8 +9,8 @@ import { Button } from './Button';
 import { SiteIcon } from './SiteIcon';
 
 const resultVariants: Variants = {
-  hidden: { opacity: 0, y: 4 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 18, scale: 0.985 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.42, ease: 'easeOut' } },
 };
 
 interface ResultCardProps {
@@ -44,7 +44,12 @@ export function ResultCard({ result, index, onOpenFetch }: ResultCardProps) {
       className="serp-result"
       data-testid="result-card"
       variants={resultVariants}
-      transition={{ duration: reduce ? 0 : 0.18, ease: 'easeOut' }}
+      transition={{ duration: reduce ? 0 : 0.42, ease: 'easeOut' }}
+      whileHover={
+        reduce
+          ? undefined
+          : { y: -4, scale: 1.004, transition: { duration: 0.22, ease: 'easeOut' } }
+      }
       aria-labelledby={`result-title-${index}`}
     >
       <div className="serp-result__source">

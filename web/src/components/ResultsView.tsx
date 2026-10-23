@@ -38,7 +38,7 @@ type SerpTab = 'all' | 'ai';
 
 const listVariants: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.03 } },
+  show: { transition: { staggerChildren: 0.05, delayChildren: 0.04 } },
 };
 
 interface ResultsViewProps {
@@ -85,8 +85,17 @@ export function ResultsView({
   const [drawerResult, setDrawerResult] = useState<SearchResult | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<SerpTab>('all');
+  const [scrolled, setScrolled] = useState(false);
   const autoRunRef = useRef<string | null>(null);
   const aiRef = useRef<HTMLDivElement>(null);
+
+  // 滚动后压缩 header，让液态玻璃层从“浮起”过渡到“贴顶”。
+  useEffect(() => {
+    const handleScroll = (): void => setScrolled(window.scrollY > 6);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const ai = useAiSummary({
     apiKey,
@@ -191,7 +200,7 @@ export function ResultsView({
 
   return (
     <div className="results-view">
-      <header className="serp-header">
+      <header className={classNames('serp-header', scrolled && 'serp-header--scrolled')}>
         <div className="serp-header__inner">
           <div className="serp-header__bar">
             <button
