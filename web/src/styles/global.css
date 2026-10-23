@@ -5798,3 +5798,452 @@ a.btn {
     display: none;
   }
 }
+
+/* ==========================================================================
+   Material You 控件规格（不只是配色）
+   ========================================================================== */
+
+/* Top app bar：全宽 surface，不再使用浮动玻璃卡片 */
+.serp-header {
+  padding: 0;
+  border-bottom: 1px solid var(--md-outline-variant);
+  background: var(--md-surface);
+  transition: box-shadow 0.25s var(--ease-google);
+}
+
+.serp-header--scrolled {
+  box-shadow: var(--md-elevation-2);
+}
+
+.serp-header__inner {
+  max-width: 1120px;
+  padding: 0 16px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.serp-header--scrolled .serp-header__inner {
+  background: transparent;
+  box-shadow: none;
+}
+
+.serp-header__bar {
+  height: 64px;
+}
+
+/* M3 primary tabs：底部 3dp indicator，而不是 pill */
+.serp-tabs {
+  gap: 0;
+  padding: 0;
+  border-top: 0;
+}
+
+.serp-tab {
+  position: relative;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 0;
+  background: transparent;
+  color: var(--md-on-surface-variant);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.serp-tab::before {
+  display: none;
+}
+
+.serp-tab::after {
+  position: absolute;
+  right: 16px;
+  bottom: 0;
+  left: 16px;
+  display: block;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--md-primary);
+  opacity: 0;
+  content: '';
+  transform: none;
+  transition: opacity 0.2s var(--ease-google);
+}
+
+.serp-tab:hover:not(:disabled) {
+  background: var(--md-state-hover);
+  color: var(--md-on-surface);
+  transform: none;
+}
+
+.serp-tab--active,
+.serp-tab--active:hover:not(:disabled) {
+  background: transparent;
+  color: var(--md-primary);
+}
+
+.serp-tab--active::after {
+  opacity: 1;
+}
+
+.serp-advanced-link {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: var(--md-primary);
+}
+
+/* M3 Search Bar：56dp 高、28dp 圆角、filled container，无描边 */
+.searchbar {
+  height: 56px;
+  border: 0;
+  border-radius: 28px;
+  background-color: var(--md-surface-container-high);
+  background-image: none;
+  box-shadow: none;
+}
+
+.searchbar--compact {
+  height: 48px;
+  padding: 0 8px 0 16px;
+}
+
+.searchbar:hover {
+  border: 0;
+  box-shadow: var(--md-elevation-1);
+}
+
+.searchbar--focused,
+.searchbar:focus-within,
+.home-content--searching .searchbar--hero {
+  border: 0;
+  box-shadow: 0 0 0 2px var(--md-primary);
+}
+
+.searchbar__plus,
+.searchbar__home-submit,
+.searchbar__submit,
+.searchbar__clear {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.searchbar__ai-pill {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--md-outline-variant);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--md-on-surface-variant);
+  font-size: 12px;
+}
+
+.searchbar__ai-pill:hover {
+  border-color: var(--md-outline);
+  background: var(--md-state-hover);
+  color: var(--md-on-surface);
+}
+
+.searchbar__ai-pill--active {
+  border-color: transparent;
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+
+.serp-search .searchbar--compact {
+  height: 48px;
+  border: 0;
+  border-radius: 28px;
+  background-color: var(--md-surface-container-high);
+  box-shadow: none;
+}
+
+.serp-search .searchbar--compact:focus-within {
+  border: 0;
+  box-shadow: 0 0 0 2px var(--md-primary);
+}
+
+/* Home top app bar：去掉浮动胶囊 */
+.home-topbar {
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.home-topbar__link {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 999px;
+}
+
+.home-topbar .icon-btn {
+  width: 40px;
+  height: 40px;
+}
+
+.settings-pill {
+  height: 40px;
+  padding: 0 24px;
+}
+
+/* M3 buttons：40dp 高，filled / tonal / outlined / text */
+.btn {
+  height: 40px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn--primary {
+  padding: 0 12px;
+}
+
+.btn--secondary {
+  padding: 0 24px;
+}
+
+.btn--quiet,
+.btn--danger {
+  height: 40px;
+  padding: 0 12px;
+}
+
+.g-button {
+  height: 40px;
+  padding: 0 24px;
+}
+
+.ai-overview__action.btn,
+.m-text-button.btn,
+.serp-result__actions .btn--quiet,
+.serp-result__action--link {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 999px;
+}
+
+.advanced-reset,
+.advanced-submit,
+.advanced-custom-lang__add {
+  height: 40px;
+  padding: 0 24px;
+  border-radius: 999px;
+}
+
+/* M3 chips：8dp 圆角，未选中透明 + outline */
+.m-chip,
+.advanced-chip {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--md-outline-variant);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--md-on-surface-variant);
+}
+
+.m-chip:hover,
+.advanced-chip:hover {
+  border-color: var(--md-outline);
+  background: var(--md-state-hover);
+}
+
+.m-chip--selected,
+.advanced-chip--selected {
+  border-color: transparent;
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+
+.home-history {
+  border-radius: 12px;
+}
+
+.home-history__row {
+  border-radius: 8px;
+  background: transparent;
+}
+
+.home-history__term {
+  padding-left: 12px;
+}
+
+/* M3 outlined text fields：56dp 高，4dp 圆角，透明底 */
+.m-field__box {
+  height: 56px;
+  padding: 0 8px 0 12px;
+  border: 1px solid var(--md-outline);
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.m-field__box:focus-within {
+  border-color: var(--md-primary);
+  box-shadow: inset 0 0 0 1px var(--md-primary);
+}
+
+.advanced-input,
+.advanced-textarea {
+  border: 1px solid var(--md-outline);
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.advanced-input {
+  height: 56px;
+  padding: 0 12px;
+}
+
+.advanced-textarea {
+  min-height: 96px;
+  padding: 12px;
+}
+
+.advanced-preview {
+  border-radius: 12px;
+}
+
+.advanced-preview__value {
+  border-radius: 4px;
+  background: transparent;
+}
+
+/* M3 switch：52×32 track，24dp thumb */
+.m-switch__track {
+  width: 52px;
+  height: 32px;
+  padding: 4px;
+  border: 2px solid var(--md-outline);
+  border-radius: 16px;
+  background: var(--md-surface-container-highest);
+}
+
+.m-switch__thumb {
+  width: 24px;
+  height: 24px;
+  background: var(--md-outline);
+  box-shadow: none;
+}
+
+.m-switch__input:checked + .m-switch__track {
+  border-color: var(--md-primary);
+  background: var(--md-primary);
+}
+
+.m-switch__input:checked + .m-switch__track .m-switch__thumb {
+  background: var(--md-on-primary);
+  transform: translateX(20px);
+}
+
+/* M3 radio：20dp，选中内圆 10dp */
+.m-radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--md-outline);
+}
+
+.m-radio::after {
+  width: 10px;
+  height: 10px;
+  background: var(--md-primary);
+}
+
+.m-radio-input:checked + .m-radio {
+  border-color: var(--md-primary);
+}
+
+.m-radio-row {
+  min-height: 48px;
+  padding: 8px 0;
+}
+
+/* M3 filled cards：12dp 圆角、无描边、无阴影 */
+.serp-result {
+  border: 0;
+  border-radius: 12px;
+  background-color: var(--md-surface-container-highest);
+  background-image: none;
+  box-shadow: none;
+}
+
+.serp-result:hover {
+  border: 0;
+  background-color: color-mix(in srgb, var(--md-on-surface) 5%, var(--md-surface-container-highest));
+  box-shadow: none;
+}
+
+.ai-overview {
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.serp-stats__text,
+.serp-stats__loading {
+  border-radius: 8px;
+}
+
+/* M3 menu / snackbar */
+.apps-menu {
+  border-radius: 4px;
+}
+
+.apps-menu__item {
+  min-height: 48px;
+}
+
+.toast {
+  border-radius: 4px;
+}
+
+/* M3 dialog title scale */
+.m-dialog__title {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+}
+
+.m-dialog {
+  border-radius: 28px;
+}
+
+/* 响应式：保留 520px 以下的搜索框换行 */
+@media (max-width: 768px) {
+  .serp-header__inner {
+    padding: 0 12px;
+  }
+
+  .serp-header__bar {
+    height: 64px;
+  }
+
+  .home-topbar {
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .serp-header__bar,
+  .serp-header--scrolled .serp-header__bar {
+    height: auto;
+  }
+
+  .searchbar--hero {
+    height: 52px;
+  }
+}
