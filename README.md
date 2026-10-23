@@ -10,8 +10,6 @@
 
 > **GitHub 仓库**：<https://github.com/xiaopi668/DeepSearch>
 
-> 📦 **交接文档**：[`HANDOVER.md`](HANDOVER.md)（架构、开发/部署、配置、运维、二次开发、已知限制）
-
 ## 功能
 
 - 🔍 **网页搜索**：标题、站点名、日期、短摘要、权威度、相关性排序，支持 DeepSeek 搜索操作符
