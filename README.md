@@ -9,6 +9,7 @@
 > 本项目的 Node 服务只做一层薄代理：访客自己的 Key 仅随请求头透传给 DeepSeek，服务端不保存。
 
 > **GitHub 仓库**：<https://github.com/xiaopi668/DeepSearch>
+> **容器镜像**：<https://github.com/xiaopi668/DeepSearch/pkgs/container/deepsearch>
 
 ## 功能
 
@@ -126,6 +127,15 @@ pnpm prune --prod
 docker build -t deepsearch:1.0.0 .
 docker run -d --name deepsearch -p 8787:8787 --env-file .env --restart unless-stopped deepsearch:1.0.0
 ```
+
+也可以直接拉取 GitHub Actions 已发布的镜像：
+
+```bash
+docker pull ghcr.io/xiaopi668/deepsearch:1.0.0
+docker run -d --name deepsearch -p 8787:8787 --env-file .env --restart unless-stopped ghcr.io/xiaopi668/deepsearch:1.0.0
+```
+
+镜像标签包括 `1.0.0`、`1.0`、`latest` 与 `sha-<commit>`；推送 `v*.*.*` 标签时由 GitHub Actions 自动构建发布。
 
 ### 方式二：docker compose
 
