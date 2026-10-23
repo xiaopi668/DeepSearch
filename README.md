@@ -8,6 +8,8 @@
 > **为什么需要后端？** DeepSeek API 不允许浏览器跨域直连，且 API Key 不应出现在前端请求里。
 > 本项目的 Node 服务只做一层薄代理：访客自己的 Key 仅随请求头透传给 DeepSeek，服务端不保存。
 
+> **GitHub 仓库**：<https://github.com/xiaopi668/DeepSearch>
+
 > 📦 **交接文档**：[`HANDOVER.md`](HANDOVER.md)（架构、开发/部署、配置、运维、二次开发、已知限制）
 
 ## 功能
@@ -56,7 +58,7 @@
 | --- | --- |
 | 前端 | React 19、TypeScript、Vite 8、framer-motion、react-markdown |
 | 后端 | Node.js 24（ESM）、Express 5、compression；零数据库、零额外运行时依赖 |
-| 测试 | Vitest 5 + Supertest（全 mock，不消耗真实额度）、Playwright（截图/冒烟） |
+| 测试 | Vitest 5 + Supertest（13 个文件 / 165 个用例，全 mock，不消耗真实额度）、Playwright（截图/冒烟） |
 | 部署 | 多阶段 Dockerfile、docker compose、systemd unit |
 
 ## 目录结构
@@ -77,7 +79,7 @@ DeepSearch/
 │  ├─ index.html
 │  ├─ vite.config.ts
 │  └─ src/                 # components / lib / styles
-├─ tests/                  # 后端单元 + 接口测试（fake fetch）
+├─ tests/                  # 后端单元 + 接口测试（165 用例，fake fetch）
 ├─ scripts/
 │  ├─ e2e-check.mjs        # 真实 API 端到端冒烟（需自备 Key）
 │  └─ screenshot.mjs       # Playwright 截图（复用本机 Edge）
@@ -94,9 +96,13 @@ DeepSearch/
 要求：**Node.js ≥ 20.19**、**pnpm ≥ 10**（推荐 11）。
 
 ```bash
+git clone https://github.com/xiaopi668/DeepSearch.git
+cd DeepSearch
 pnpm install
 pnpm dev          # 同时启动后端 :8787 与 Vite :5173
 ```
+
+> `node_modules/`、`dist/` 与 `.env` 已在 `.gitignore` 中忽略；克隆后按上面的命令安装，生产运行前先执行 `pnpm build`。
 
 打开 <http://localhost:5173>，点右上角设置，填入你的 DeepSeek API Key（在
 <https://platform.deepseek.com/api_keys> 创建），点击「测试连接」验证后保存即可搜索。
@@ -216,7 +222,7 @@ location / {
 ## 测试与验证
 
 ```bash
-pnpm test        # 后端单元 + 接口测试（fake fetch，不花钱）
+pnpm test        # 13 个测试文件 / 165 个用例（fake fetch，不花钱）
 pnpm typecheck   # 前端类型检查
 pnpm build       # 前端生产构建
 ```
