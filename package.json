@@ -1,0 +1,47 @@
+{
+  "name": "deepsearch",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "基于 DeepSeek 搜索 API 的搜索引擎 Web 应用（每个访客自带 API Key）",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"node --watch server/index.mjs\" \"vite --config web/vite.config.ts\"",
+    "dev:api": "node --watch server/index.mjs",
+    "dev:web": "vite --config web/vite.config.ts",
+    "build": "vite build --config web/vite.config.ts",
+    "start": "node server/index.mjs",
+    "test": "vitest run --config tests/vitest.config.mjs",
+    "test:watch": "vitest --config tests/vitest.config.mjs",
+    "typecheck": "tsc -p web/tsconfig.json --noEmit",
+    "e2e": "node scripts/e2e-check.mjs",
+    "screenshot": "node scripts/screenshot.mjs"
+  },
+  "dependencies": {
+    "compression": "^1.8.2",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/supertest": "^7.2.1",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "framer-motion": "^14.3.0",
+    "lucide-react": "^1.59.0",
+    "playwright": "^1.64.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "supertest": "^7.3.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

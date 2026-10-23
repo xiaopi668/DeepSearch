@@ -1,0 +1,59 @@
+# ============================================================================
+# DeepSearch Docker Compose 单服务示例
+#   - 所有变量都有默认值，docker compose up -d 即可启动（不强制要求 .env）
+#   - 可通过项目根目录的 .env 或 shell 环境变量覆盖
+#   - 本应用为 BYOK：此处不需要也不能配置任何访客 API Key
+# ============================================================================
+
+services:
+  deepsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: deepsearch:1.0.0
+    container_name: deepsearch
+    restart: unless-stopped
+
+    # 宿主机端口可通过 PORT 覆盖；容器内固定监听 8787
+    ports:
+      - "${PORT:-8787}:8787"
+
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8787
+      DEEPSEEK_BASE_URL: "${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
+      SEARCH_TIMEOUT_MS: "${SEARCH_TIMEOUT_MS:-20000}"
+      FETCH_TIMEOUT_MS: "${FETCH_TIMEOUT_MS:-60000}"
+      CHAT_TIMEOUT_MS: "${CHAT_TIMEOUT_MS:-120000}"
+      MAX_BODY_BYTES: "${MAX_BODY_BYTES:-1mb}"
+      RATE_LIMIT_WINDOW_MS: "${RATE_LIMIT_WINDOW_MS:-60000}"
+      SEARCH_RATE_LIMIT_MAX: "${SEARCH_RATE_LIMIT_MAX:-90}"
+      FETCH_RATE_LIMIT_MAX: "${FETCH_RATE_LIMIT_MAX:-30}"
+      AI_RATE_LIMIT_MAX: "${AI_RATE_LIMIT_MAX:-20}"
+      # 站点访问口令，默认空 = 关闭
+      ACCESS_TOKEN: "${ACCESS_TOKEN:-}"
+      # 默认不信任 X-Forwarded-For（端口直接暴露时防止伪造绕过限流）；
+      # 若容器前有可信反向代理，把 TRUST_PROXY 设为 1（或代理网段）。
+      TRUST_PROXY: "${TRUST_PROXY:-0}"
+      LOG_LEVEL: "${LOG_LEVEL:-info}"
+
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8787/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+    security_opt:
+      - no-new-privileges:true
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

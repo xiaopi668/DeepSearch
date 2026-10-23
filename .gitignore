@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+web/dist/
+*.tsbuildinfo
+
+# env / secrets：任何真实密钥都不允许入库
+.env
+.env.*
+!.env.example
+
+# logs / runtime
+*.log
+logs/
+screenshots/*.tmp.*
+
+# editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# test output
+coverage/
+test-results/
+playwright-report/

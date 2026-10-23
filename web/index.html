@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DeepSearch — 调用 DeepSeek 搜索 API 的搜索引擎</title>
+    <meta
+      name="description"
+      content="DeepSearch 是一个调用 DeepSeek 搜索 API 的网页搜索引擎：访客自带 API Key，搜索网页并在浏览器内获得流式 AI 中文总结。"
+    />
+    <meta name="theme-color" content="#202124" />
+    <meta name="color-scheme" content="dark light" />
+    <!-- 首屏深色兜底（纯样式，无内联脚本）：避免 CSS 加载前出现白底闪烁。 -->
+    <style>
+      html[data-theme='dark'],
+      html[data-theme='dark'] body {
+        background-color: #202124;
+        color: #e8eaed;
+      }
+    </style>
+    <meta property="og:title" content="DeepSearch" />
+    <meta property="og:description" content="调用 DeepSeek 搜索 API 的搜索引擎，自带 API Key，AI 流式总结。" />
+    <meta property="og:type" content="website" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='28' cy='28' r='15' fill='none' stroke='%238ab4f8' stroke-width='7'/%3E%3Cpath d='M39 39 52 52' stroke='%238ab4f8' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <div style="max-width: 640px; margin: 80px auto; padding: 0 24px; font-family: Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #202124; color: #9aa0a6; line-height: 1.58">
+        <h1 style="color: #e8eaed; font-size: 24px">DeepSearch</h1>
+        <p>本应用需要启用 JavaScript 才能使用。</p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

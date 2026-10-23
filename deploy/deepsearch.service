@@ -1,0 +1,60 @@
+[Unit]
+# ============================================================================
+# DeepSearch systemd 服务单元（模板）
+# 安装：sudo cp deploy/deepsearch.service /etc/systemd/system/
+#       sudo systemctl daemon-reload && sudo systemctl enable --now deepsearch
+# ============================================================================
+Description=DeepSearch 网页搜索引擎（DeepSeek 搜索 + AI 总结，BYOK）
+Documentation=file:/opt/deepsearch/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deepsearch
+Group=deepsearch
+WorkingDirectory=/opt/deepsearch
+
+# 配置全部放在 /etc/deepsearch/deepsearch.env（见 .env.example），不要写进本单元
+EnvironmentFile=/etc/deepsearch/deepsearch.env
+Environment=NODE_ENV=production
+
+ExecStart=/usr/bin/node server/index.mjs
+Restart=always
+RestartSec=3
+TimeoutStopSec=10
+KillSignal=SIGTERM
+
+# ----------------------------- 安全加固 ------------------------------------
+# 本服务只读取代码 / 静态资源，接受网络请求，不需要写磁盘
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+UMask=0077
+
+# 无需 ReadWritePaths：应用不写任何文件（BYOK Key 只在内存中透传）
+
+# ----------------------------- 日志 ----------------------------------------
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=deepsearch
+
+[Install]
+WantedBy=multi-user.target
